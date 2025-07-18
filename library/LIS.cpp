@@ -1,3 +1,7 @@
+//LIS(最長増加部分列)
+//dp[i][h]:=最初のi項のみを考えた場合の単調増加な部分列であって、
+//最後の要素がhであるような場合についての、最長の長さ
+
 int op(int a, int b) {
     return max(a, b);
 }
@@ -25,6 +29,8 @@ int LIS(const vector<ll> &a) {
 
         //値取得
         int b = dp.prod(0, h);
+        //同じ値が連続することを許す場合
+        //int b = dp.prod(0, h + 1);
 
         //更新
         if(dp.get(h) < b + 1) {

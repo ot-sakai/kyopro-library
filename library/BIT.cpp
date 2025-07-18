@@ -1,5 +1,6 @@
 //BIT Binary Indexed Tree フェニック木
 //最初からi番目までの区間和 計算量 O(log n)
+//1-indexed
 template<typename T>
 struct BIT {
     int n; //配列の要素数(数列の要素数+1)
@@ -77,7 +78,7 @@ int main() {
         cin >> v[i]; //配列
     }
     ll ans = 0;
-    BIT b(n); //これまでの数字がどんな風になっているのかをメモる為のBIT
+    BIT<int> b(n); //これまでの数字がどんな風になっているのかをメモる為のBIT
     for(int i = 0; i < n; i++) {
         ans += i - b.sum(v[i]);
         b.add(v[i], 1);

@@ -1,12 +1,13 @@
 #include<bits/stdc++.h>
-#include<atcoder/all>
+//#include<atcoder/all>
 using namespace std;
-using namespace atcoder;
+//using namespace atcoder;
 
 using ll = long long;
 using ld = long double;
 
-using mint = modint998244353;
+//using mint = modint; //mint::set_mod(M);
+//using mint = modint998244353;
 //using mint = modint1000000007;
 
 template<class T> using pq = priority_queue<T>; //大きい順

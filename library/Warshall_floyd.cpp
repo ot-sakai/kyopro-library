@@ -10,7 +10,8 @@ void warshall_floyd(vector<vector<ll>> &dist) {
     }
 }
 
-vector<vector<ll>> dist(n, INF);
+//初期化
+vector<vector<ll>> dist(n, vector<ll>(n, INF));
 
 for(int i = 0; i < n; i++) {
     dist[i][i] = 0;
