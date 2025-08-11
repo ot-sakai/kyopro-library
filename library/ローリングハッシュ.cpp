@@ -1,31 +1,33 @@
 //検索対象文字列S(n文字)に検索文字列T(m文字)が含めれるかどうか
 //時間計算量O(n + m)
-class RollingHash {
-private:
-    static const long long MOD = 1e9 + 7;  // 大きな素数
-    static const long long BASE = 1009;    // 適当な基数
+// ローリングハッシュ
+struct RollingHash {
+    static const int base1 = 1007, base2 = 2009;
+    static const int mod1 = 1000000007, mod2 = 1000000009;
+    vector<long long> hash1, hash2, power1, power2;
 
-    vector<long long> hash;     // 累積ハッシュ
-    vector<long long> power;    // BASEの累乗
-
-public:
-    // コンストラクタ: 与えられた文字列のハッシュを前計算
-    RollingHash(const string& s) {
-        int n = s.size();
-        hash.resize(n + 1, 0);
-        power.resize(n + 1, 1);
-
+    // construct
+    RollingHash(const string &S) {
+        int n = (int)S.size();
+        hash1.assign(n+1, 0);
+        hash2.assign(n+1, 0);
+        power1.assign(n+1, 1);
+        power2.assign(n+1, 1);
         for (int i = 0; i < n; ++i) {
-            hash[i + 1] = (hash[i] * BASE + s[i]) % MOD;
-            power[i + 1] = (power[i] * BASE) % MOD;
+            hash1[i+1] = (hash1[i] * base1 + S[i]) % mod1;
+            hash2[i+1] = (hash2[i] * base2 + S[i]) % mod2;
+            power1[i+1] = (power1[i] * base1) % mod1;
+            power2[i+1] = (power2[i] * base2) % mod2;
         }
     }
-
-    // 部分文字列 s[l..r) のハッシュを取得
-    long long get_hash(int l, int r) const {
-        long long res = (hash[r] - hash[l] * power[r - l]) % MOD;
-        if (res < 0) res += MOD;
-        return res;
+    
+    // get hash of S[left:right]
+    inline pair<long long, long long> get(int l, int r) const {
+        long long res1 = hash1[r] - hash1[l] * power1[r-l] % mod1;
+        if (res1 < 0) res1 += mod1;
+        long long res2 = hash2[r] - hash2[l] * power2[r-l] % mod2;
+        if (res2 < 0) res2 += mod2;
+        return {res1, res2};
     }
 };
 
@@ -34,13 +36,13 @@ int main() {
     RollingHash rh(s);
 
     // s[0..4] = "hello" のハッシュを表示
-    cout << "Hash of s[0..5): " << rh.get_hash(0, 5) << endl;
+    cout << "Hash of s[0..5): " << rh.get(0, 5) << endl;
 
     // s[5..10] = "hello" のハッシュを表示
-    cout << "Hash of s[5..10): " << rh.get_hash(5, 10) << endl;
+    cout << "Hash of s[5..10): " << rh.get(5, 10) << endl;
 
     // 一致するならハッシュも同じ
-    if (rh.get_hash(0, 5) == rh.get_hash(5, 10)) {
+    if (rh.get(0, 5) == rh.get(5, 10)) {
         cout << "Substrings are equal!" << endl;
     }
 
