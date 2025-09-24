@@ -15,6 +15,11 @@ template<class T> using pq_g = priority_queue<T, vector<T>, greater<T>>; //小�
 
 #define vec_unique(v) v.erase(unique(v.begin(), v.end()), v.end()) //重複削除
 #define vec_iota(v) iota(v.begin(), v.end(), 0) //0, 1, 2, 3, ..., n - 1にセット
+#define concat(a, b) a.insert(a.end(), b.begin(), b.end())
+#define debug(x) cerr << #x << " = " << x << endl
+#define maxvalue(array) *max_element(array.begin(), array.end())
+#define minvalue(array) *min_element(array.begin(), array.end())
+#define sumvalue(array) accumulate(array.begin(), array.end(), 0ll)
 
 int dx[4] = {1, -1, 0, 0};
 int dy[4] = {0, 0, 1, -1};
