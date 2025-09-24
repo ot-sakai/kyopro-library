@@ -4,7 +4,7 @@ vector<int> sizeSubtree; // sizeSubtree[v] := v を根とする部分ツリー�
 vector<int> centroids; // 重心列挙の答えがここに入る
 
 /* ツリーDP */
-void SubFindCentroids(int v, int parent_of_v = -1) {
+void SubFindCentroids(int v, int parent_of_v) {
 	sizeSubtree[v] = 1;
 	bool isCentroid = true;
 	for (auto ch : graph[v]) {
