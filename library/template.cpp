@@ -20,6 +20,7 @@ template<class T> using pq_g = priority_queue<T, vector<T>, greater<T>>; //Â∞è„Å
 #define maxvalue(array) *max_element(array.begin(), array.end())
 #define minvalue(array) *min_element(array.begin(), array.end())
 #define sumvalue(array) accumulate(array.begin(), array.end(), 0ll)
+#define popcount(x) __builtin_popcountll(x)
 
 int dx[4] = {1, -1, 0, 0};
 int dy[4] = {0, 0, 1, -1};
