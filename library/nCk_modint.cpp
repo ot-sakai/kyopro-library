@@ -50,3 +50,16 @@ long long nCk(int n, int k) {
     assert(!(n < 0 || k < 0));
     return com[n][k];
 }
+
+
+
+
+
+//合成数modでの二項係数
+//パスカルの三角形を使う
+//計算量O(N^2)
+vector<vector<int64_t>> comb(N+1, vector<int64_t>(N+1));
+for(int i=0; i<=N; i++){
+    comb[i][0] = comb[i][i] = 1;
+    for(int j=1; j<i; j++) comb[i][j] = (comb[i-1][j-1] + comb[i-1][j]) % M;
+}
