@@ -16,7 +16,7 @@ vector<ll> B;
 for(int bit = 0; bit < (1 << (n - n / 2)); bit++) {
     ll sum = 0;
     for(int i = 0; i < (n - n / 2); i++) {
-        if(bit & (1 << i)) {
+        if(bit & (1 << i)) { //n / 2 + iから
             
         }
     }
