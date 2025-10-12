@@ -17,7 +17,7 @@ std::unordered_map<
     std::vector<std::vector<char>>,
     int,
     VectorVectorCharHash
-> hashmp;
+> mp;
 
 
 
@@ -43,35 +43,81 @@ std::unordered_map<
     std::vector<std::string>,
     int,
     VectorStringHash
-> hashmp;
+> mp;
 
 
 
 
 
 
-//3, Unorderd map(vector<pair<ll, ll>>> version)
+//3, Unorderd map(pair<ll, ll>> version)
 // カスタムハッシュ関数を定義する構造体
-struct VectorPairLLHash {
-    std::size_t operator()(const std::vector<std::pair<ll, ll>>& vec) const {
+struct PairLLHash {
+    std::size_t operator()(const std::pair<ll, ll>& p) const {
+        std::size_t h1 = std::hash<ll>{}(p.first);
+        std::size_t h2 = std::hash<ll>{}(p.second);
+        
+        return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+    }
+};
+
+std::unordered_map<
+    std::pair<ll, ll>,
+    int,
+    PairLLHash
+> mp;
+
+
+
+
+
+
+//4, Unorderd map(tuple<ll, ll, ll> version)
+// 1. カスタムハッシュ関数の定義
+struct TupleLLHash {
+    std::size_t operator()(const std::tuple<ll, ll, ll>& t) const {
         std::size_t seed = 0;
         
-        std::hash<ll> ll_hasher;
+        // 3つの要素のハッシュ値を順番に組み合わせる
+        hash_combine(seed, std::get<0>(t));
+        hash_combine(seed, std::get<1>(t));
+        hash_combine(seed, std::get<2>(t));
 
-        for (const auto& p : vec) {
-            std::size_t h1 = ll_hasher(p.first);
-            std::size_t h2 = ll_hasher(p.second);
-
-            std::size_t pair_hash = h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
-
-            seed ^= pair_hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-        }
         return seed;
     }
 };
 
 std::unordered_map<
-    std::vector<std::pair<ll, ll>>,
+    std::tuple<ll, ll, ll>,
     int,
-    VectorPairLLHash
-> hashmp;
+    TupleLLHash 
+> mp;
+
+
+
+
+
+
+//5, Unorderd map(vector<ll> version)
+// カスタムハッシュ関数を定義する構造体
+struct VectorLLHash {
+    std::size_t operator()(const std::vector<ll>& vec) const {
+        std::size_t seed = 0;
+        
+        std::hash<ll> ll_hasher;
+
+        for (ll value : vec) {
+            std::size_t val_hash = ll_hasher(value);
+            
+            seed ^= val_hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
+        return seed;
+    }
+};
+
+
+std::unordered_map<
+    std::vector<ll>,
+    int,
+    VectorLLHash
+> mp;
