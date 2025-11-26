@@ -1,5 +1,6 @@
 //繰り返し二乗法を用いた高速なべき乗計算(計算量O(log n))
 ll pow(ll x, ll n) {
+    if(x == 0) return 0;
     ll ret = 1;
     while(n > 0) {
         if(n & 1) ret *= x;
@@ -9,10 +10,10 @@ ll pow(ll x, ll n) {
     return ret;
 }
 
-const int MOD = 998244353;
 //繰り返し二乗法を用いた高速なべき乗計算(計算量O(log n))
 //MOD version
-ll pow(ll x, ll n) {
+ll pow(ll x, ll n, ll MOD) {
+    if(x == 0) return 0;
     ll ret = 1;
     while(n > 0) {
         if(n & 1) ret = (ret * x) % MOD;
