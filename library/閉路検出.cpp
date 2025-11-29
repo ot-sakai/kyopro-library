@@ -30,11 +30,12 @@ while(!que.empty()) {
 bool dfs(int v) {
     seen[v] = true; // 行きがけ時に true になる
     for(auto next_v : graph[v]) {
+        //if(next_v == previous_v) continue; //逆戻りの場合(無向グラフの場合は必要)
         if(finished[next_v]) continue;
 
-        if(seen[v] && !finished[next_v]) return true;
+        if(seen[next_v] && !finished[next_v]) return true;
 
-        if(!seen[v]) {
+        if(!seen[next_v]) {
             if(dfs(next_v)) return true;
         }
     }
