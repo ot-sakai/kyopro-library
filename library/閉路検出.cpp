@@ -63,6 +63,7 @@ bool dfs(int v, int previous_v) {
 
 
 //functional graphの閉路検出
+//→SCCでええやないか！！！！！！！
 vector<int> detect_cycle(const vector<vector<int>> &graph) {
     int n = graph.size();
     //頂点を1つ好きに選んで，N回移動する
