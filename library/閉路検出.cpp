@@ -1,5 +1,6 @@
 //なもりグラフの閉路検出(次数1の頂点を削っていく)
 queue<int> que;
+vector<bool> namori(n, true);
 for(int i = 0; i < n; i++) {
     if(deg[i] == 1) {
         que.push(i);
@@ -58,4 +59,24 @@ bool dfs(int v, int previous_v) {
     }
 
     return false;
+}
+
+
+//functional graphの閉路検出
+vector<int> detect_cycle(const vector<vector<int>> &graph) {
+    int n = graph.size();
+    //頂点を1つ好きに選んで，N回移動する
+    //→必ず閉路上の頂点に着く
+    int v = 0;
+    for(int i = 0; i < n; i++) v = graph[v].back();
+
+    //得られた頂点から出発してサイクルを検出する
+    vector<int> res;
+    int start = v;
+    do {
+        res.push_back(v);
+        v = graph[v].back();
+    } while(v != start);
+
+    return res;
 }
