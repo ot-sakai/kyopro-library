@@ -25,10 +25,13 @@ vector<ll> zobrist_hash(vector<int> v) {
 
     for(int i = 0; i < n; i++) {
         //すでに含まれている場合は何もしない
+        //ここからは「要素の種類」のみ
         if(s.count(v[i])) {
             hash[i + 1] = hash[i];
             continue;
         }
+        //ここまで
+        
         s.insert(v[i]);
         hash[i + 1] = hash[i] ^ rng(v[i]);
     }
