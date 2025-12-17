@@ -75,3 +75,37 @@ public:
 
 mt19937_64 mt{(unsigned int)time(NULL)};
 RollingHash::ull RollingHash::_base = mt() % RollingHash::_mod;
+
+
+
+
+//ローリングハッシュをセグ木に載せる
+//セグ木に載せることにより，1点更新可能になる
+int mod = 998244353;
+int base;
+struct S {
+    ll h, pw;
+};
+
+S op(S a, S b) {
+    S res;
+    res.h = (a.h * b.pw + b.h) % mod;
+    res.pw = (a.pw * b.pw) % mod;
+    return res;
+}
+
+S e() {
+    return{0, 1};
+}
+
+S gen(char c) {
+    S res;
+    res.h = c;
+    res.pw = base;
+    return res;
+}
+
+int main() {
+    mt19937_64 rng(time(0));
+    base = rng() % mod;
+}
