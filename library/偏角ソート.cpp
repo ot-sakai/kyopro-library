@@ -28,3 +28,29 @@ for(int j = 0; j < n; j++) {
     vec.push_back(angle);
 }
 sort(vec.begin(), vec.end());
+
+
+
+
+//偏角ソート
+//外積を利用→誤差が生じない
+struct point {
+    int x;
+    int y;
+    int id;
+};
+
+ll cross(const point &a, const point &b) {
+    return (ll)a.x * b.y - (ll)a.y * b.x;
+}
+
+bool compare(const point &a, const point &b) {
+    int ah = (a.y < 0 or (a.y == 0 and a.x < 0));
+    int bh = (b.y < 0 or (b.y == 0 and b.x < 0));
+    if (ah != bh) return ah < bh;
+    return cross(a, b) > 0;
+}
+
+void argument_sort(vector<point> &points) {
+    sort(points.begin(), points.end(), compare);
+}
