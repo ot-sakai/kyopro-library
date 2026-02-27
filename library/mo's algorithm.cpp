@@ -9,7 +9,7 @@ int n, q, bsize;
 bool qcomp(const query &a, const query &b) {
     int al = a.l / bsize;
     int bl = b.l / bsize;
-    if(al != bl) return a.l < b.l;
+    if(al != bl) return al < bl;
 
     if(al & 1) return a.r > b.r; //ジグザグにする
     return a.r < b.r;
