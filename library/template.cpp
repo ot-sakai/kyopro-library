@@ -5,6 +5,7 @@ using namespace std;
 
 using ll = long long;
 using ld = long double;
+using lll = __int128_t;
 
 //using mint = modint; //mint::set_mod(M);
 //using mint = modint998244353;
@@ -31,6 +32,8 @@ int dy[4] = {0, 0, 1, -1};
 #define INF2 2e9
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     
     //cout << fixed << setprecision(15) << << endl;
     return 0;
