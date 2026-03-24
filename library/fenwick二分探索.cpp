@@ -19,7 +19,7 @@ auto f = [&](ll x) {
     else return false;
 };
 
-ll ok = n;
+ll ok = n - 1;
 ll ng = -1;
 while(abs(ok - ng) > 1) {
     ll mid = (ok + ng) / 2;
