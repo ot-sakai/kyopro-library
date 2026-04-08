@@ -12,5 +12,9 @@ for(int left = 0; left < n; left++) {
 
     ans += (right - left);
 
-    if(right == left) right++;
+    if(right == left) {
+        right++;
+    } else {
+
+    }
 }
