@@ -66,4 +66,18 @@ struct LCA {
     bool is_on_path(int u, int v, int a) {
         return get_dist(u, a) + get_dist(a, v) == get_dist(u, v);
     }
+
+    //頂点uからk世代前の祖先を求める(なければ-1を返す)
+    int ancestor(int u, int k) {
+        if(dist[u] < k) return -1;
+
+        int K = parent.size();
+        int cur = u;
+        for(int i = 0; i < K; i++) {
+            if((k >> i) & 1 == 1) {
+                cur = parent[i][cur];
+            }
+        }
+        return cur;
+    }
 };
