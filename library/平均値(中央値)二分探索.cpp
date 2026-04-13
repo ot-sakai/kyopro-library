@@ -15,7 +15,7 @@ for(int i = 0; i < 100; i++) {
 //中央値二分探索
 //x 1 ,…,x n  の中央値が K 以上 ⇔ x i のうち K 以上のものの個数が K 未満のものの個数より多い
 ll ok = 0;
-ll ng = 0;
+ll ng = INF;
 while(abs(ok - ng) > 1) {
     ll mid = (ok + ng) / 2;
     if(f(mid)) {
