@@ -20,4 +20,4 @@ auto dfs = [&](auto dfs, int now, int par) -> void {
 
 dfs(dfs, 0, -1);
 
-//fw.sum(0, ind[v]); //根から頂点vまでの距離
+//fw.sum(0, ind[v] + 1); //根から頂点vまでの距離
