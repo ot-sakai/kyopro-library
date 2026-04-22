@@ -6,7 +6,7 @@
 vector<vector<int>> dp(61, vector<int>(n));
 //初期条件(1回移動した地点)
 for(int j = 0; j < n; j++) {
-    dp[0][j] = a[j];
+    dp[0][j] = a[j]; //((j + a[j]) % n
 }
 
 //遷移
@@ -17,7 +17,7 @@ for(int i = 1; i < 61; i++) {
 }
 
 //解を求める
-int ans = 0;
+int ans = 0; //最初の位置
 int i = 0;
 
 while(k) {
