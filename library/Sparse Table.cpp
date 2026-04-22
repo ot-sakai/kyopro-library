@@ -1,4 +1,5 @@
 //不変な数列の任意の区間に対する最小値・最大値を前処理O(nlogn)、クエリごとO(1)で求めるデータ構造
+//x * x = xが成り立てば(重複しても不変)、tableにのる
 
 template<typename T>
 class SparseTable {

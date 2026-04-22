@@ -31,3 +31,48 @@ while(!que.empty()) {
         }
     }
 }
+
+
+//color codingを用いたtop2 BFS
+auto f = [&](const vector<int> c) -> vector<ll> {
+    vector<ll> dist(n, INF);
+    queue<ll> que;
+    
+    for(auto s : c) {
+        que.push(s);
+        dist[s] = 0;
+    }
+
+    while(!que.empty()) {
+        auto v = que.front();
+        que.pop();
+
+        for(auto next_v : graph[v]) {
+            if(dist[next_v] != INF) continue;
+
+            dist[next_v] = dist[v] + 1;
+            que.push(next_v);
+        }
+    }
+
+    return dist;
+};
+
+vector<ll> ans(ng.size(), INF);
+for(int k = 0; k < 20; k++) {
+    vector<int> c1;
+    vector<int> c2;
+    for(auto x : ok) {
+        if((x >> k) & 1) {
+            c1.push_back(x);
+        } else {
+            c2.push_back(x);
+        }
+    }
+    auto d1 = f(c1);
+    auto d2 = f(c2);
+    for(int i = 0; i < ng.size(); i++) {
+        int x = ng[i];
+        ans[i] = min(ans[i], (ll)d1[x] + d2[x]);
+    }
+}
