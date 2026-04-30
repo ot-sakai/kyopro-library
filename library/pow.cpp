@@ -1,5 +1,5 @@
 //繰り返し二乗法を用いた高速なべき乗計算(計算量O(log n))
-ll pow(ll x, ll n) {
+ll mypow(ll x, ll n) {
     if(x == 0) return 0;
     ll ret = 1;
     while(n > 0) {
@@ -12,7 +12,7 @@ ll pow(ll x, ll n) {
 
 //繰り返し二乗法を用いた高速なべき乗計算(計算量O(log n))
 //MOD version
-ll pow(ll x, ll n, ll MOD) {
+ll powmod(ll x, ll n, ll MOD) {
     if(x == 0) return 0;
     ll ret = 1;
     while(n > 0) {
