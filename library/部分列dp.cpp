@@ -1,3 +1,5 @@
+//文字列 Sが与えられる。Sの(連続しない)部分文字列を数え上げよ。
+
 //next[i][c] := i文字目以降で最初に文字cが登場するindex(存在しない場合はn)
 vector<vector<int>> next(n + 1, vector<int>(26, n));
 for(int i = n - 1; i >= 0; i--) {
