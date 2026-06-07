@@ -5,7 +5,7 @@ vector<bool> isp(N + 1, true);
 void sieve() {
     isp[0] = false;
     isp[1] = false;
-    for(int i = 2; i * i <= N; i++) {
+    for(int i = 2; i <= N; i++) {
         if(isp[i]) {
             for(int j = 2; i * j <= N; j++) {
                 isp[i * j] = false;
