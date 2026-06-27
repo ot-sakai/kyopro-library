@@ -1,81 +1,84 @@
-template< typename G >
-struct HeavyLightDecomposition {
-    G &g;
-    vector< int > sz, in, out, head, rev, par;
+struct HLD {
+    int n;
+    vector<vector<int>> g;
+    vector<int> sz, depth, head, in, out, par;
+    int timer;
 
-    HeavyLightDecomposition(G &g) :
-        g(g), sz(g.size()), in(g.size()), out(g.size()), head(g.size()), rev(g.size()), par(g.size()) {}
+    HLD(int n) : n(n), g(n), sz(n), depth(n), head(n), in(n), out(n), par(n) {}
 
-    void dfs_sz(int idx, int p) {
-        par[idx] = p;
-        sz[idx] = 1;
-        if(g[idx].size() && g[idx][0] == p) swap(g[idx][0], g[idx].back());
-        for(auto &to : g[idx]) {
-            if(to == p) continue;
-            dfs_sz(to, idx);
-            sz[idx] += sz[to];
-            if(sz[g[idx][0]] < sz[to]) swap(g[idx][0], to);
-        }
+    // 無向辺を追加
+    void add_edge(int u, int v) {
+        g[u].push_back(v);
+        g[v].push_back(u);
     }
 
-    void dfs_hld(int idx, int p, int &times) {
-        in[idx] = times++;
-        rev[in[idx]] = idx;
-        for(auto &to : g[idx]) {
-            if(to == p) continue;
-            head[to] = (g[idx][0] == to ? head[idx] : to);
-            dfs_hld(to, idx, times);
-        }
-        out[idx] = times;
-    }
-
+    // 根を指定して構築（デフォルトは頂点0）
     void build(int root = 0) {
-        dfs_sz(root, -1);
-        int t = 0;
-        head[root] = root; // headの初期化を確実に
-        dfs_hld(root, -1, t);
+        timer = 0;
+        dfs_sz(root, -1, 0);
+        head[root] = root;
+        dfs_hld(root, -1);
     }
 
-    // 頂点vのデータ構造上での位置を返す
-    int get_id(int v) const { return in[v]; }
-
-    // --- ここからデータ構造との連携用改造 ---
-
-    // パス更新 (SegTree / BIT用)
-    // q: (l, r) => void, 例: [&](int l, int r){ seg.update(l, r, x); }
-    template< typename Q >
-    void path_update(int u, int v, const Q &q, bool edge = false) {
-        for(;; v = par[head[v]]) {
-            if(in[u] > in[v]) swap(u, v);
-            if(head[u] == head[v]) break;
-            q(in[head[v]], in[v] + 1);
+    void dfs_sz(int v, int p, int d) {
+        sz[v] = 1;
+        depth[v] = d;
+        par[v] = p;
+        if (g[v].size() && g[v][0] == p) swap(g[v][0], g[v].back());
+        for (auto& to : g[v]) {
+            if (to == p) continue;
+            dfs_sz(to, v, d + 1);
+            sz[v] += sz[to];
+            // 部分木のサイズが最大のものを先頭にする（Heavy Edge）
+            if (sz[to] > sz[g[v][0]]) swap(to, g[v][0]);
         }
-        q(in[u] + edge, in[v] + 1);
     }
 
-    // パスクエリ (SegTree / BIT用)
-    // ti: 単位元
-    // q: (l, r) => T, 例: [&](int l, int r){ return seg.query(l, r); }
-    // f: (T, T) => T, 例: [&](ll a, ll b){ return a + b; }
-    template< typename T, typename Q, typename F >
-    T path_query(int u, int v, const T &ti, const Q &q, const F &f, bool edge = false) {
-        T l = ti, r = ti;
-        for(;; v = par[head[v]]) {
-            if(in[u] > in[v]) swap(u, v), swap(l, r);
-            if(head[u] == head[v]) break;
-            l = f(q(in[head[v]], in[v] + 1), l);
+    void dfs_hld(int v, int p) {
+        in[v] = timer++;
+        for (auto to : g[v]) {
+            if (to == p) continue;
+            // Heavy Edgeなら現在のheadを引き継ぐ、Light Edgeなら自身を新たなheadとする
+            head[to] = (to == g[v][0] ? head[v] : to);
+            dfs_hld(to, v);
         }
-        return f(f(q(in[u] + edge, in[v] + 1), l), r);
+        out[v] = timer;
     }
 
-    // 部分木クエリ
-    template< typename Q >
-    void subtree_update(int v, const Q &q, bool edge = false) {
-        q(in[v] + edge, out[v]);
+    // 頂点 u と v の最小共通祖先 (LCA)
+    int lca(int u, int v) {
+        while (head[u] != head[v]) {
+            if (depth[head[u]] < depth[head[v]]) swap(u, v);
+            u = par[head[u]];
+        }
+        return depth[u] < depth[v] ? u : v;
     }
 
-    template< typename T, typename Q >
-    T subtree_query(int v, const Q &q, bool edge = false) {
-        return q(in[v] + edge, out[v]);
+    // 頂点 v のセグメント木上のインデックスを取得
+    int get_idx(int v) const {
+        return in[v];
+    }
+
+    // パス u-v に対応するセグメント木上の区間 [l, r) のリストを返す
+    // is_edge = true の場合、LCAの頂点を除外する（辺に対するクエリ用）
+    vector<pair<int, int>> get_path_intervals(int u, int v, bool is_edge = false) {
+        vector<pair<int, int>> res;
+        while (head[u] != head[v]) {
+            if (depth[head[u]] < depth[head[v]]) swap(u, v);
+            res.emplace_back(in[head[u]], in[u] + 1);
+            u = par[head[u]];
+        }
+        if (depth[u] > depth[v]) swap(u, v);
+        // is_edge が true なら lca(u) のインデックスを +1 して区間から外す
+        if (in[u] + is_edge < in[v] + 1) {
+            res.emplace_back(in[u] + is_edge, in[v] + 1);
+        }
+        return res;
+    }
+
+    // 頂点 v の部分木に対応するセグメント木上の区間 [l, r) を返す
+    // is_edge = true の場合、頂点 v 自身を除外する
+    pair<int, int> get_subtree_interval(int v, bool is_edge = false) {
+        return {in[v] + is_edge, out[v]};
     }
 };
