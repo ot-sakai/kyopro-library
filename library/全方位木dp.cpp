@@ -94,16 +94,16 @@ struct E {
 
 };
 
-E merge(E a, E b){
+E merge(E a, E b){ //複数の辺から上がってきた情報を「合流」させる
     return a * b;
 }
-E e(){
+E e(){ //単位元
     return 0;
 }
-E put_edge(E v, int i){
+E put_edge(E v, int i){ //子頂点の結果を「辺」を通して親へ引っ張り上げる
     return v + 1;
 }
-E put_vertex(E e, int v){
+E put_vertex(E e, int v){ //合流した情報に「頂点自身」の情報を加味する
     return e;
 }
 
