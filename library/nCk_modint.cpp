@@ -1,26 +1,28 @@
 //計算量 O(n + log p)
 //MOD version
-const int MAX = 2000000;
-mint fac[MAX], finv[MAX], inv[MAX];
+const int N = 2000000;
 
-//前処理
+mint fac[N + 10], finv[N + 10];
+
 void COMinit() {
+    fac[0] = 1;
+    for(int i = 0; i < N; i++) {
+        fac[i + 1] = fac[i] * (i + 1);
+    }
+
     const int MOD = mint::mod();
-    fac[0] = fac[1] = 1;
-    finv[0] = finv[1] = 1;
-    inv[1] = 1;
-    for(int i = 2; i < MAX; i++) {
-        fac[i] = fac[i - 1] * i;
-        inv[i] = MOD - inv[MOD % i] * (MOD / i);
-        finv[i] = finv[i - 1] * inv[i];
+    finv[N] = inv_mod(fac[N], MOD);
+
+    for(int i = N - 1; i >= 0; i--) {
+        finv[i] = finv[i + 1] * (i + 1);
     }
 }
 
-//二項係数計算
 mint COM(int n, int k) {
     if(n < k) return 0;
     if(n < 0 || k < 0) return 0;
-    return fac[n] * finv[k] * finv[n - k];
+
+    return fac[n] * finv[n - k] * finv[k];
 }
 
 
