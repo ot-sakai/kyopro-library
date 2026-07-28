@@ -2,10 +2,12 @@
 //#include<atcoder/all>
 using namespace std;
 //using namespace atcoder;
+//python3 expander.py main.cpp
 
 using ll = long long;
 using ld = long double;
 using lll = __int128_t;
+using ull = __uint128_t;
 
 //using mint = modint; //mint::set_mod(M);
 //using mint = modint998244353;
