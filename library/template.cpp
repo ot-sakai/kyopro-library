@@ -33,10 +33,17 @@ int dy[4] = {0, 0, 1, -1};
 #define INF 2e18
 #define INF2 2e9
 
+void solve() {
+    
+}
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    
+    int t = 1;
+    while(t--) {
+        solve();
+    }
     //cout << fixed << setprecision(15) << << endl;
     return 0;
 }
