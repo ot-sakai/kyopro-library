@@ -1,70 +1,64 @@
 //検索対象文字列S(n文字)に検索文字列T(m文字)が含めれるかどうか
 //時間計算量O(n + m)
 // ローリングハッシュ
+const ull MOD = 0x1fffffffffffffff;
+mt19937_64 mt{(unsigned int)time(NULL)};
+ull base = mt() % MOD;
 struct RollingHash {
-private:
-    using ull = unsigned long long;
-    static const ull _mod = 0x1fffffffffffffff;
-    static ull _base;
-    vector<ull> _hashed, _power;
+    vector<ull> hashed, power;
 
-    inline ull _mul(ull a, ull b) const {
-        ull au = a >> 31;
-        ull ad = a & ((1UL << 31) - 1);
-        ull bu = b >> 31;
-        ull bd = b & ((1UL << 31) - 1);
-        ull mid = ad * bu + au * bd;
-        ull midu = mid >> 30;
-        ull midd = mid & ((1UL << 30) - 1);
-        ull ans = au * bu * 2 + midu + (midd << 31) + ad * bd;
-        
-        ans = (ans >> 61) + (ans & _mod);
-        if (ans >= _mod) ans -= _mod;
-        return ans;
+    inline ull mul(ull a, ull b) const {
+        __uint128_t res = __uint128_t(a) * b;
+        res %= MOD;
+        return res;
     }
-public:
+
     RollingHash(const string &s) {
-        ll n = s.size();
-        _hashed.assign(n + 1, 0);
-        _power.assign(n + 1, 0);
-        _power[0] = 1;
-        for(ll i = 0; i < n; i++) {
-            _power[i + 1] = _mul(_power[i], _base);
-            _hashed[i + 1] = _mul(_hashed[i], _base) + s[i];
-            if(_hashed[i + 1] >= _mod) _hashed[i + 1] -= _mod;
+        int n = s.size();
+        hashed.resize(n + 1);
+        power.resize(n + 1);
+        power[0] = 1;
+        for(int i = 0; i < n; i++) {
+            power[i + 1] = mul(power[i], base);
+            hashed[i + 1] = mul(hashed[i], base) + s[i];
+            hashed[i + 1] %= MOD;
         }
     }
-    
-    ull get(ll l, ll r) const { //部分列s[l, ... ,r - 1]のハッシュ値を返す
-        ull ret = _hashed[r] + _mod - _mul(_hashed[l], _power[r - l]);
-        if(ret >= _mod) ret -= _mod;
-        return ret;
+
+    //部分列s[l, ... ,r - 1]のハッシュ値を返す
+    ull get(int l, int r) const {
+        ull res = hashed[r] + MOD - mul(hashed[l], power[r - l]);
+        res %= MOD;
+        return res;   
     }
-    
-    ull connect(ull h1, ull h2, ll h2len) const { //2つのハッシュ値h1とh2を連結したハッシュ値を返す
-        //引数h2lenはハッシュ値h2を持つ文字列の長さ
-        ull ret = _mul(h1, _power[h2len]) + h2;
-        if(ret >= _mod) ret -= _mod;
-        return ret;
+
+    //2つのハッシュ値h1とh2を連結したハッシュ値を返す
+    //引数h2lenはハッシュ値h2を持つ文字列の長さ
+    ull connect(ull h1, ull h2, int h2len) const {
+        ull res = mul(h1, power[h2len]) + h2;
+        res %= MOD;
+        return res;
     }
-    
+
     void connect(const string &s) {
-        ll n = _hashed.size() - 1, m = s.size();
-        _hashed.resize(n + m + 1);
-        _power.resize(n + m + 1);
+        ll n = hashed.size() - 1;
+        ll m = s.size();
+        hashed.resize(n + m + 1);
+        power.resize(n + m + 1);
         for(ll i = n; i < n + m; i++) {
-            _power[i + 1] = _mul(_power[i], _base);
-            _hashed[i + 1] = _mul(_hashed[i], _base) + s[i - n];
-            if(_hashed[i + 1] >= _mod) _hashed[i + 1] -= _mod;
+            power[i + 1] = mul(power[i], base);
+            hashed[i + 1] = mul(hashed[i], base) + s[i - n];
+            hashed[i + 1] %= MOD;
         }
     }
-    
-    ll LCP(const RollingHash &b, ll l1, ll r1, ll l2, ll r2) const { //2つの文字列区間[l1, r1), [l2, r2)における最長共通接頭辞(LCP)の長さを返す
-        //計算量 log N
-        //引数bには比較対象のRollingHashを乗せる
+
+    //2つの文字列区間[l1, r1), [l2, r2)における最長共通接頭辞(LCP)の長さを返す
+    //引数bには比較対象のRollingHashを乗せる
+    ll LCP(const RollingHash &b, ll l1, ll r1, ll l2, ll r2) {
         ll len = min(r1 - l1, r2 - l2);
-        ll low = -1, high = len + 1;
-        while(high - low > 1) {
+        ll low = -1;
+        ll high = len + 1;
+        while(abs(high - low) > 1) {
             ll mid = (low + high) / 2;
             if(get(l1, l1 + mid) == b.get(l2, l2 + mid)) low = mid;
             else high = mid;
@@ -72,40 +66,3 @@ public:
         return low;
     }
 };
-
-mt19937_64 mt{(unsigned int)time(NULL)};
-RollingHash::ull RollingHash::_base = mt() % RollingHash::_mod;
-
-
-
-
-//ローリングハッシュをセグ木に載せる
-//セグ木に載せることにより，1点更新可能になる
-int mod = 998244353;
-int base;
-struct S {
-    ll h, pw;
-};
-
-S op(S a, S b) {
-    S res;
-    res.h = (a.h * b.pw + b.h) % mod;
-    res.pw = (a.pw * b.pw) % mod;
-    return res;
-}
-
-S e() {
-    return{0, 1};
-}
-
-S gen(char c) {
-    S res;
-    res.h = c;
-    res.pw = base;
-    return res;
-}
-
-int main() {
-    mt19937_64 rng(time(0));
-    base = rng() % mod;
-}
